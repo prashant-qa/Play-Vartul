@@ -1,28 +1,40 @@
+
 // @ts-check
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
-  fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
 
-  // ✅ Terminal + HTML दोन्ही ठिकाणी दिसण्यासाठी 'list' add केला, 'html' तसाच ठेवला
+  // Tests एका file मध्ये parallel चालणार नाहीत
+  fullyParallel: false,
+
+  forbidOnly: !!process.env.CI,
+
+  // Failed tests पुन्हा run होतील
+  retries: process.env.CI ? 2 : 1,
+
+  // Controlled parallel execution
+  workers: process.env.CI ? 1 : 2,
+
+  // Terminal + HTML report
   reporter: [
     ['list'],
     ['html', { open: 'never' }],
   ],
 
-  // ✅ हे add केले - 1000 loop साठी unlimited timeout
-  timeout: 0,
+  // Default test timeout: 2 minutes
+  timeout: 120000,
+
+  // Expect assertion timeout
+  expect: {
+    timeout: 10000,
+  },
 
   use: {
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
     actionTimeout: 30000,
     navigationTimeout: 60000,
 
-    // ✅ fail झालेल्या test चा exact problem HTML report मध्ये दिसण्यासाठी add केले
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
   },

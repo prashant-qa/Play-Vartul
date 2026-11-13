@@ -1,3 +1,5 @@
+npx playwright install
+
 npx playwright test tests/Login/login-positive.spec.js --headed --project=chromium; `
 npx playwright test tests/Login/login-negative.spec.js --headed --project=chromium; `
 npx playwright test tests/Login/purchaseOrder.spec.js --headed --project=chromium; `
